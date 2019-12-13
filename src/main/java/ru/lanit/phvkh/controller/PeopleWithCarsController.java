@@ -46,7 +46,7 @@ public class PeopleWithCarsController {
         }
     }
 
-    @RequestMapping(value = "/personwithcars", method = RequestMethod.GET)
+    @RequestMapping(value = "/personwithcars", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
     public ResponseEntity getPersonWithCars(@RequestParam String personid) throws JsonProcessingException {
         Status status = personWithCarsService.checkId(personid);
         switch (status) {
@@ -59,7 +59,7 @@ public class PeopleWithCarsController {
         return new ResponseEntity(result, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/statistics", method = RequestMethod.GET)
+    @RequestMapping(value = "/statistics", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
     public ResponseEntity getStatistics() throws JsonProcessingException {
         Statistics statistics = statisticsService.getStatistics();
         String result = new ObjectMapper().writeValueAsString(statistics);

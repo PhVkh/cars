@@ -1,22 +1,24 @@
 package ru.lanit.phvkh.initializer;
 
-import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+import org.springframework.web.WebApplicationInitializer;
+import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
 import ru.lanit.phvkh.config.SpringConfig;
 
-// потом попробовать https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/WebApplicationInitializer.html
-public class Initializer extends AbstractAnnotationConfigDispatcherServletInitializer {
-    @Override
-    protected Class<?>[] getRootConfigClasses() {
-        return new Class[0];
-    }
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRegistration;
 
+public class Initializer implements WebApplicationInitializer {
     @Override
-    protected Class<?>[] getServletConfigClasses() {
-        return new Class[] {SpringConfig.class};
-    }
+    public void onStartup(ServletContext servletContext) {
+        AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
+        ctx.register(SpringConfig.class);
+        servletContext.addListener(new ContextLoaderListener(ctx));
+        ctx.setServletContext(servletContext);
 
-    @Override
-    protected String[] getServletMappings() {
-        return new String[] {"/"};
+        ServletRegistration.Dynamic servlet = servletContext.addServlet("dispatcher", new DispatcherServlet(ctx));
+        servlet.addMapping("/");
+        servlet.setLoadOnStartup(1);
     }
 }
