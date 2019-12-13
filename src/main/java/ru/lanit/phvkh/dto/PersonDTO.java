@@ -3,16 +3,17 @@ package ru.lanit.phvkh.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.lanit.phvkh.database.PersonEntity;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 public class PersonDTO {
-    @JsonProperty("Id")
+    @JsonProperty("id")
     private Long id;
-    @JsonProperty("Name")
+    @JsonProperty("name")
     private String name;
-    @JsonProperty("Date of birth")
+    @JsonProperty("birthdate")
     private String dateOfBirth;
-    @JsonProperty("Cars")
+    @JsonProperty("cars")
     private Set<CarDTO> cars;
 
     public PersonDTO() {
@@ -21,7 +22,8 @@ public class PersonDTO {
     public PersonDTO(PersonEntity personEntity) {
         this.id = personEntity.getId();
         this.name = personEntity.getName();
-        this.dateOfBirth = personEntity.getDate().toString();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        this.dateOfBirth = personEntity.getDate().format(formatter);
     }
 
     public Long getId() {

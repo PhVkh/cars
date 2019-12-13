@@ -12,7 +12,7 @@ import ru.lanit.phvkh.dto.CarDTO;
 import java.time.LocalDate;
 
 @Service
-public class AddCarService {
+public class CarService {
     @Autowired
     CarDAO carDAO;
     @Autowired
@@ -23,16 +23,16 @@ public class AddCarService {
         if (car.getId() != null && car.getModel() != null && car.getHorsepower() != null && car.getOwnerId() != null) {
             if (carDAO.getCarById(car.getId()) != null) {
                 System.out.println("Машина с таким id уже существует.");
-                return Status.BAD_REQUEST;
+                return Status.ID_CONFLICT;
             }
             if (car.getHorsepower() <= 0) {
                 System.out.println("Маловато лошадиных сил.");
-                return Status.BAD_REQUEST;
+                return Status.WEAK_CAR;
             }
             int pos = car.getModel().indexOf("-");
             if (pos <= 0 || pos == car.getModel().length() - 1) {
                 System.out.println("Ошибка в формате модели машины.");
-                return Status.BAD_REQUEST;
+                return Status.WRONG_CAR_MODEL;
             }
             PersonEntity owner = personDAO.getPersonById(car.getOwnerId());
             if (owner != null) {
@@ -43,13 +43,13 @@ public class AddCarService {
                     return Status.OK;
                 }
                 System.out.println("владельцу машины нет 18-ти.");
-                return Status.BAD_REQUEST;
+                return Status.YOUNG_OWNER;
             } else {
                 System.out.println("Владельца машины нет в базе.");
-                return Status.BAD_REQUEST;
+                return Status.OWNER_NOT_FOUND;
             }
         } else {
-            return Status.BAD_REQUEST;
+            return Status.NULLABLE_FIELDS;
         }
     }
 }

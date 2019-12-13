@@ -8,7 +8,7 @@ import ru.lanit.phvkh.database.PersonDAO;
 import ru.lanit.phvkh.dto.Statistics;
 
 @Service
-public class StatisticsService {
+public class AllDataService {
     @Autowired
     PersonDAO personDAO;
     @Autowired
@@ -21,5 +21,11 @@ public class StatisticsService {
         long vendorNumber = carDAO.countVendors();
 
         return new Statistics(peopleNumber, carNumber, vendorNumber);
+    }
+
+    @Transactional
+    public void clear() {
+        carDAO.clear();
+        personDAO.clear();
     }
 }

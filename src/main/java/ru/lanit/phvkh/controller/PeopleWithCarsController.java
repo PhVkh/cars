@@ -14,32 +14,36 @@ import ru.lanit.phvkh.service.*;
 @RestController
 public class PeopleWithCarsController {
     @Autowired
-    AddPersonService addPersonService;
+    PersonService personService;
     @Autowired
-    AddCarService addCarService;
+    CarService carService;
     @Autowired
-    ClearService clearService;
-    @Autowired
-    PersonWithCarsService personWithCarsService;
-    @Autowired
-    StatisticsService statisticsService;
+    AllDataService allDataService;
 
     @RequestMapping(value = "/person", method = RequestMethod.POST)
     public ResponseEntity addPerson(@RequestBody PersonDTO person) {
-        Status status = addPersonService.addPerson(person);
+        Status status = personService.addPerson(person);
         switch (status) {
-            case BAD_REQUEST:
+            case TIME_TRAVELER:
+            case WRONG_DATE_FORMAT:
+            case ID_CONFLICT:
+            case NULLABLE_FIELDS:
                 return new ResponseEntity(HttpStatus.BAD_REQUEST);
-            default: OK:
+            default:
                 return new ResponseEntity(HttpStatus.OK);
         }
     }
 
     @RequestMapping(value = "/car", method = RequestMethod.POST)
     public ResponseEntity addCar(@RequestBody CarDTO car) {
-        Status status = addCarService.addCar(car);
+        Status status = carService.addCar(car);
         switch (status) {
-            case BAD_REQUEST:
+            case ID_CONFLICT:
+            case WEAK_CAR:
+            case WRONG_CAR_MODEL:
+            case YOUNG_OWNER:
+            case OWNER_NOT_FOUND:
+            case NULLABLE_FIELDS:
                 return new ResponseEntity(HttpStatus.BAD_REQUEST);
             default: OK:
                 return new ResponseEntity(HttpStatus.OK);
@@ -48,27 +52,28 @@ public class PeopleWithCarsController {
 
     @RequestMapping(value = "/personwithcars", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
     public ResponseEntity getPersonWithCars(@RequestParam String personid) throws JsonProcessingException {
-        Status status = personWithCarsService.checkId(personid);
+        Status status = personService.checkId(personid);
         switch (status) {
-            case BAD_REQUEST:
+            case NULLABLE_FIELDS:
+            case WRONG_DATA_FORMAT:
                 return new ResponseEntity(HttpStatus.BAD_REQUEST);
-            case NOT_FOUND:
+            case OWNER_NOT_FOUND:
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        String result = new ObjectMapper().writeValueAsString(personWithCarsService.getPersonAndHisCars(Integer.parseInt(personid)));
+        String result = new ObjectMapper().writeValueAsString(personService.getPersonAndHisCars(Integer.parseInt(personid)));
         return new ResponseEntity(result, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/statistics", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
     public ResponseEntity getStatistics() throws JsonProcessingException {
-        Statistics statistics = statisticsService.getStatistics();
+        Statistics statistics = allDataService.getStatistics();
         String result = new ObjectMapper().writeValueAsString(statistics);
         return new ResponseEntity(result, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/clear", method = RequestMethod.GET)
     public ResponseEntity clear() {
-        clearService.clear();
+        allDataService.clear();
         return new ResponseEntity(HttpStatus.OK);
     }
 }

@@ -9,13 +9,42 @@ import ru.lanit.phvkh.database.PersonEntity;
 import ru.lanit.phvkh.dto.CarDTO;
 import ru.lanit.phvkh.dto.PersonDTO;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
-public class PersonWithCarsService {
+public class PersonService {
     @Autowired
     PersonDAO personDAO;
+
+    @Transactional
+    public Status addPerson(PersonDTO person) {
+        if (person.getId() != null && person.getName() != null && person.getDateOfBirth() != null) {
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(("d.MM.yyyy"));
+                LocalDate dateOfBirth = LocalDate.parse(person.getDateOfBirth(), formatter);
+                LocalDate currentDate = LocalDate.now();
+                if (dateOfBirth.isAfter(currentDate)) {
+                    System.out.println("Пользователь должен быть рожден на данный момент.");
+                    return Status.TIME_TRAVELER;
+                }
+            } catch (Exception e) {
+                System.out.println("Неверный формат даты рождения.");
+                return Status.WRONG_DATE_FORMAT;
+            }
+            if (personDAO.getPersonById(person.getId()) != null) {
+                System.out.println("Пользователь с таким id уже существует.");
+                return Status.ID_CONFLICT;
+            }
+            personDAO.addPerson(new PersonEntity(person));
+            return Status.OK;
+        } else {
+            System.out.println("Поля не могут быть нулевыми.");
+            return Status.NULLABLE_FIELDS;
+        }
+    }
 
     @Transactional
     public boolean existsPerson(long id) {
@@ -33,16 +62,16 @@ public class PersonWithCarsService {
             long id = Integer.parseInt(personId);
             if (personId == null) {
                 System.out.println("Id не должно быть пусто пусто.");
-                return Status.BAD_REQUEST;
+                return Status.NULLABLE_FIELDS;
             }
             if (existsPerson(id)) {
                 return Status.OK;
             } else {
-                return Status.NOT_FOUND;
+                return Status.OWNER_NOT_FOUND;
             }
         } catch (Exception e) {
             System.out.println("Id должно быть числом.");
-            return Status.BAD_REQUEST;
+            return Status.WRONG_DATA_FORMAT;
         }
     }
 

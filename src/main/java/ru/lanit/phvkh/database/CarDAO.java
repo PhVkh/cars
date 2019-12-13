@@ -5,6 +5,7 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @Repository
@@ -32,7 +33,9 @@ public class CarDAO {
     }
 
     public long countVendors() {
-        return sessionFactory.getCurrentSession().createQuery("SELECT DISTINCT UPPER(vendor) FROM CarEntity").list().size(); //СПРОСИТЬ КАК СДЕЛАТЬ НОРМАЛЬНЫЙ ПОДСЧЁТ
+        Query query = sessionFactory.getCurrentSession().createSQLQuery("SELECT COUNT (DISTINCT UPPER (vendor)) FROM cars");
+        BigInteger count = (BigInteger) query.uniqueResult();
+        return count.intValue();
     }
 
     public void clear() {

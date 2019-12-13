@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.lanit.phvkh.database.CarEntity;
 
 public class CarDTO {
-    @JsonProperty("Id")
+    @JsonProperty("id")
     private Long id;
-    @JsonProperty("Model")
+    @JsonProperty("model")
     private String model;
-    @JsonProperty("Horsepower")
+    @JsonProperty("horsepower")
     private Integer horsepower;
-    @JsonProperty("Owners Id")
+    @JsonProperty("ownerId")
     private Long ownerId;
 
     public CarDTO() {
@@ -18,7 +18,7 @@ public class CarDTO {
 
     public CarDTO(CarEntity car) {
         this.id = car.getId();
-        this.model = car.getVendor() + " " + car.getModel();
+        this.model = car.getVendor() + "-" + car.getModel();
         this.horsepower = car.getHorsepower();
         this.ownerId = car.getOwner().getId();
     }
