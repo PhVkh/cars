@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.lanit.phvkh.dto.CarDTO;
@@ -21,6 +22,7 @@ public class PeopleWithCarsController {
     AllDataService allDataService;
 
     @RequestMapping(value = "/person", method = RequestMethod.POST)
+
     public ResponseEntity addPerson(@RequestBody PersonDTO person) {
         Status status = personService.addPerson(person);
         switch (status) {
@@ -75,5 +77,10 @@ public class PeopleWithCarsController {
     public ResponseEntity clear() {
         allDataService.clear();
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping("/home")
+    public String home() {
+        return "redirect:/statistics";
     }
 }
