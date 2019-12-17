@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@ComponentScan({ "ru.lanit.phvkh" })
+@ComponentScan("ru.lanit.phvkh")
 @EnableTransactionManagement
 public class TestConfig {
     @Bean
@@ -25,17 +25,17 @@ public class TestConfig {
     @Bean
     public static DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/test");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("asdqwe123");
+        dataSource.setDriverClassName("org.h2.Driver");
+        dataSource.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
+        dataSource.setUsername("");
+        dataSource.setPassword("");
         return dataSource;
     }
 
     private static Properties setHibernateProperties() {
         Properties properties = new Properties();
-        properties.put("hibernate.dialect", "org.hibernate.dialect.SQLServer2008Dialect");
-        properties.put("hibernate.hbm2ddl.auto", "update");
+        properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        properties.put("hibernate.hbm2ddl.auto", "create-drop");
         properties.put("hibernate.show_sql", "true");
         return properties;
     }

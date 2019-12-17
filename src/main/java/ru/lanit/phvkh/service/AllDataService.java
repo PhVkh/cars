@@ -14,6 +14,14 @@ public class AllDataService {
     @Autowired
     CarDAO carDAO;
 
+    public CarDAO getCarDAO() {
+        return carDAO;
+    }
+
+    public PersonDAO getPersonDAO() {
+        return personDAO;
+    }
+
     @Transactional
     public Statistics getStatistics() {
         long peopleNumber = personDAO.countPeople();

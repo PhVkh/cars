@@ -26,4 +26,6 @@ public class Statistics {
         this.numberOfCars = numberOfCars;
         this.numberOfVendors = numberOfVendors;
     }
+
+    public Statistics(){}
 }
